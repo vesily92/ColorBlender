@@ -21,6 +21,7 @@ final class PaletteViewController: UIViewController {
                 color: backgroundColor
             )
             setupBarButtonColor()
+            colorDescriptionView.configure(with: backgroundColor)
             view.backgroundColor = backgroundColor
         }
     }
@@ -34,16 +35,19 @@ final class PaletteViewController: UIViewController {
     private var chosenColor: UIColor = .white
     private var chosenIndexPath: IndexPath = [0, 0]
     
+    private var colorDescriptionView: ColorDescriptionView!
     private var collectionView: UICollectionView!
     private var dataSource: DataSource!
     
-    init(colorBlender: IColorManager, initialColors: [UIColor] = []) {
-        self.colorManager = colorBlender
+    init(colorManager: IColorManager, initialColors: [UIColor] = []) {
+        self.colorManager = colorManager
         super.init(nibName: nil, bundle: nil)
         
-        backgroundColor = colorBlender.blend(colors: initialColors)
-        backgroundIsLight = colorBlender.checkIntensityOf(color: backgroundColor)
+        backgroundColor = colorManager.blend(colors: initialColors)
+        backgroundIsLight = colorManager.checkIntensityOf(color: backgroundColor)
         colorModels = map(colors: initialColors)
+        
+        colorDescriptionView = ColorDescriptionView(colorManager: colorManager)
     }
     
     required init?(coder: NSCoder) {
@@ -54,11 +58,12 @@ final class PaletteViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = editButtonItem
-        navigationItem.rightBarButtonItem?.tintColor = .black
+        setupBarButtonColor()
         
         view.backgroundColor = getBackgroundColor()
         setupCollectionView()
         createDataSource()
+        setupColorDescriptionView()
         
         dataSource?.apply(createSnapshot())
     }
@@ -93,6 +98,7 @@ final class PaletteViewController: UIViewController {
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
         collectionView.register(
             ColorViewCell.self,
             forCellWithReuseIdentifier: ColorViewCell.reuseIdentifier
@@ -108,10 +114,22 @@ final class PaletteViewController: UIViewController {
         ])
     }
     
+    private func setupColorDescriptionView() {
+        colorDescriptionView.configure(with: backgroundColor)
+        colorDescriptionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(colorDescriptionView)
+        
+        NSLayoutConstraint.activate([
+            colorDescriptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            colorDescriptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            colorDescriptionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            colorDescriptionView.heightAnchor.constraint(equalToConstant: 150)
+        ])
+    }
+    
     private func setupBarButtonColor() {
         if backgroundIsLight {
             navigationItem.rightBarButtonItem?.tintColor = .black
-            
         } else {
             navigationItem.rightBarButtonItem?.tintColor = .white
         }
@@ -296,6 +314,6 @@ extension PaletteViewController: UIColorPickerViewControllerDelegate {
         colorModels.remove(at: chosenIndexPath.item)
         colorModels.insert(newModel, at: chosenIndexPath.item)
         
-        makeSnapshot()
+        makeSnapshot(animated: false)
     }
 }

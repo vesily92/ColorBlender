@@ -17,9 +17,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let colorBlender = ColorManager()
+        let colorManager = ColorManager()
         let paletteViewController = PaletteViewController(
-            colorBlender: colorBlender,
+            colorManager: colorManager,
             initialColors: [.systemRed, .systemGreen, .systemBlue]
         )
         let navigationController = UINavigationController(

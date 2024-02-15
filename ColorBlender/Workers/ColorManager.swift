@@ -10,6 +10,10 @@ import UIKit
 protocol IColorManager {
     func blend(colors: [UIColor]) -> UIColor
     func checkIntensityOf(color: UIColor) -> Bool
+    func getStringComponentsOf(
+        color: UIColor
+    ) -> (red: String, green: String, blue: String)
+    func getColorCode(for color: UIColor) -> String
 }
 
 final class ColorManager: IColorManager {
@@ -49,7 +53,45 @@ final class ColorManager: IColorManager {
         return intensity < 0.8 ? false : true
     }
     
+    func getStringComponentsOf(
+        color: UIColor
+    ) -> (red: String, green: String, blue: String) {
+        let components = getComponentsOf(color: color)
+        
+        
+        let red = String(format: "%.2f", components.red * 255)
+        let green = String(format: "%.2f", components.green * 255)
+        let blue = String(format: "%.2f", components.blue * 255)
+        
+        return (red, green, blue)
+    }
+    
+    func getColorCode(for color: UIColor) -> String {
+        let components = getComponentsOf(color: color)
+        
+        return String(
+            format: "#%02lX%02lX%02lX", 
+            lroundf(Float(components.red * 255)),
+            lroundf(Float(components.green * 255)),
+            lroundf(Float(components.blue * 255))
+        )
+    }
+    
     private func getColorIntensity(_ color: UIColor) -> CGFloat {
+        let components = getComponentsOf(color: color)
+        
+        let brightness = (
+            (components.red * 299)
+            + (components.green * 587)
+            + (components.blue * 114)
+        ) / 1000
+        
+        return brightness
+    }
+    
+    private func getComponentsOf(
+        color: UIColor
+    ) -> (red: CGFloat, green: CGFloat, blue: CGFloat) {
         guard let convertedColor = color
             .cgColor
             .converted(
@@ -59,14 +101,10 @@ final class ColorManager: IColorManager {
             ),
               let components = convertedColor
             .components else {
-            return 0
+            return (0, 0, 0)
         }
-        let brightness = (
-            (components[0] * 299)
-            + (components[1] * 587)
-            + (components[2] * 114)
-        ) / 1000
-        return brightness
+        
+        return (components[0], components[1], components[2])
     }
 }
 
