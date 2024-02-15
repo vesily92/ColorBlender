@@ -8,7 +8,7 @@
 import UIKit
 
 final class ColorSelectionView: UIView {
-        
+            
     private lazy var colorLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -24,11 +24,16 @@ final class ColorSelectionView: UIView {
         return view
     }()
     
+    private var outerBorderLayer = CAShapeLayer()
+    private var innerBorderLayer = CAShapeLayer()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupConstraints()
         backgroundColor = .white
+        layer.addSublayer(outerBorderLayer)
+        layer.addSublayer(innerBorderLayer)
     }
     
     required init?(coder: NSCoder) {
@@ -39,13 +44,14 @@ final class ColorSelectionView: UIView {
         super.layoutSubviews()
         layer.cornerRadius = 16
         colorView.layer.cornerRadius = 10
+
+        setupOuterBoarder()
+        setupInnerBoarder()
     }
-    
-    func configure(with color: UIColor?) {
-        if let color = color {
-            colorLabel.text = color.accessibilityName.capitalized
-            colorView.backgroundColor = color
-        }
+
+    func configure(with color: UIColor) {
+        colorLabel.text = color.accessibilityName.capitalized
+        colorView.backgroundColor = color
     }
     
     private func setupConstraints() {
@@ -64,6 +70,22 @@ final class ColorSelectionView: UIView {
             colorView.widthAnchor.constraint(equalTo: widthAnchor, constant: -16),
             colorView.heightAnchor.constraint(equalTo: colorView.widthAnchor)
         ])
+    }
+    
+    private func setupOuterBoarder() {
+        outerBorderLayer.strokeColor = UIColor.systemGray.cgColor
+        outerBorderLayer.lineWidth = 0.5
+        outerBorderLayer.frame = bounds
+        outerBorderLayer.fillColor = nil
+        outerBorderLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: 16).cgPath
+    }
+    
+    private func setupInnerBoarder() {
+        innerBorderLayer.strokeColor = UIColor.systemGray.cgColor
+        innerBorderLayer.lineWidth = 0.5
+        innerBorderLayer.frame = bounds
+        innerBorderLayer.fillColor = nil
+        innerBorderLayer.path = UIBezierPath(roundedRect: colorView.frame, cornerRadius: 10).cgPath
     }
 }
 
