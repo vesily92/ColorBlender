@@ -17,9 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let colorBlender = ColorBlender()
-        let viewController = PaletteViewController(colorBlender: colorBlender, initialColors: [.red, .green, .blue])
-        window?.rootViewController = viewController
+        let colorBlender = ColorManager()
+        let paletteViewController = PaletteViewController(
+            colorBlender: colorBlender,
+            initialColors: [.systemRed, .systemGreen, .systemBlue]
+        )
+        let navigationController = UINavigationController(
+            rootViewController: paletteViewController
+        )
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 
