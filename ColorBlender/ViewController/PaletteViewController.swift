@@ -31,7 +31,7 @@ final class PaletteViewController: UIViewController {
             setupColors()
         }
     }
-    
+        
     private var chosenColor: UIColor = .white
     private var chosenIndexPath: IndexPath = [0, 0]
     

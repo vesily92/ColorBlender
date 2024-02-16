@@ -9,7 +9,7 @@ import UIKit
 
 final class ColorDescriptionView: UIView {
     
-    let colorManager: IColorManager
+    private let colorManager: IColorManager
     
     private lazy var colorNameLabel: UILabel = {
         let label = UILabel()
@@ -19,25 +19,25 @@ final class ColorDescriptionView: UIView {
     
     private lazy var colorCodeLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
     private lazy var redValueLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
     private lazy var greenValueLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
     private lazy var blueValueLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
@@ -78,7 +78,8 @@ final class ColorDescriptionView: UIView {
             greenValueLabel,
             blueValueLabel
         ])
-        rgbStackView.spacing = 20
+        rgbStackView.spacing = 10
+        rgbStackView.distribution = .fillEqually
         
         let stackView = UIStackView(arrangedSubviews: [
             colorNameLabel,
@@ -92,6 +93,8 @@ final class ColorDescriptionView: UIView {
         addSubview(stackView)
         
         NSLayoutConstraint.activate([
+            rgbStackView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.8),
+            
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
